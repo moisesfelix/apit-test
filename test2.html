@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSMKA Tree Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .tree {
+            display: flex;
+            justify-content: center;
+        }
+
+        .node {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #000;
+            text-align: center;
+            line-height: 50px;
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="tree" id="tree">
+        <!-- Nodes will be dynamically added here -->
+    </div>
+    <script>
+        const treeData = [
+            {
+                value: 'C', children: [
+                    {
+                        value: 'S', children: [
+                            {
+                                value: 'M', children: [
+                                    { value: 'K' }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        function createNode(value) {
+            const node = document.createElement('div');
+            node.className = 'node';
+            node.textContent = value;
+            return node;
+        }
+
+        function renderTree(parentNode, data) {
+            const node = createNode(data.value);
+            parentNode.appendChild(node);
+            if (data.children) {
+                const childrenContainer = document.createElement('div');
+                childrenContainer.style.display = 'flex';
+                parentNode.appendChild(childrenContainer);
+                data.children.forEach(childData => {
+                    renderTree(childrenContainer, childData);
+                });
+            }
+        }
+
+        const treeContainer = document.getElementById('tree');
+        renderTree(treeContainer, treeData[0]);
+    </script>
+</body>
+
+</html>
