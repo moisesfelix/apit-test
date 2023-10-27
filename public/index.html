@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Server-Sent Events</title>
+</head>
+
+<body>
+    <h1>Server-Sent Events Example</h1>
+    <div id="sse-data"></div>
+    <script>
+        const eventSource = new EventSource('/events');
+        const sseData = document.getElementById('sse-data');
+
+        eventSource.onmessage = function (event) {
+            sseData.innerHTML += `Data from server: ${event.data}<br>`;
+        };
+    </script>
+</body>
+
+</html>

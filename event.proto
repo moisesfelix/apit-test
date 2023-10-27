@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package event;
+
+service EventService {
+  rpc Subscribe (stream EventRequest) returns (stream EventResponse);
+}
+
+message EventRequest {
+  string clientId = 1;
+}
+
+message EventResponse {
+  string message = 1;
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>gRPC Client</title>
+  </head>
+  <body>
+    <h1>gRPC Client Example</h1>
+    <div id="output"></div>
+    <script type="module">
+      import { ClientReadableStream, credentials, loadPackageDefinition } from "@grpc/grpc-js";
+
+      import { EventServiceClient } from "./event_grpc_pb.js";
+      import { EventRequest, EventResponse } from "./event_pb.js";
+
+      const client = new EventServiceClient("localhost:50051", credentials.createInsecure());
+
+      const clientId = "client-1";
+
+      const call = client.subscribe(new EventRequest().setClientId(clientId));
+
+      call.on("data", (eventResponse) => {
+        const output = document.getElementById("output");
+        output.innerHTML += `Received event: ${eventResponse.getMessage()}<br>`;
+      });
+
+      call.on("end", () => {
+        const output = document.getElementById("output");
+        output.innerHTML += "Server has closed the connection.<br>";
+      });
+
+      call.on("error", (error) => {
+        const output = document.getElementById("output");
+        output.innerHTML += `An error occurred: ${error}<br>`;
+      });
+
+      call.on("status", (status) => {
+        const output = document.getElementById("output");
+        output.innerHTML += `Status: ${JSON.stringify(status)}<br>`;
+      });
+    </script>
+  </body>
+</html>
