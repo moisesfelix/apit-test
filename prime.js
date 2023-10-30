@@ -264,7 +264,7 @@ const primosEncontrados2 = primosEncontrados.map((p) => {
     list,
     list.filter((i) => i).length,
     list.filter((i) => i).reduce((a, b) => a + b, 0),
-    p
+    p,77777777777777777777777777
   );
 });
 console.log("foi");
