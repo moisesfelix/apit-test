@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            background-color: #fefefe;
+            color: #222;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-size: 16px;
+            box-sizing: border-box;
+            font-family: 'Lexend', sans-serif;
+        }
+
+        #top-bar {
+            height: 50px;
+            background: coral;
+            width: 100%;
+        }
+
+        #top-bar h1 {
+            padding: 10px 20px;
+            color: white;
+            margin: 0;
+            font-weight: 400;
+            font-size: 1.5rem;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            height: calc(100% - 50px);
+            width: 100%;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        nav {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 300px;
+            padding: 20px;
+            background: #eee;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        nav a {
+            color: #222;
+            text-decoration: none;
+            padding-left: 10px;
+            margin-left: 10px;
+            font-size: 1rem;
+            line-height: 2rem;
+            transition: 0.2s;
+        }
+
+        nav a:hover {
+            background-color: rgba(255, 126, 79, 0.5);
+            cursor: pointer;
+        }
+
+        nav a.focus {
+            background-color: coral;
+            color: white;
+        }
+
+        nav header>a {
+            font-weight: bold;
+            font-size: 1.25rem;
+            line-height: 2.5rem;
+            padding: 10px;
+            margin: 0;
+        }
+
+        nav header>a:hover {
+            background-color: #3d3d3d;
+            color: coral;
+        }
+
+        main {
+            height: 100%;
+            padding: 0;
+            overflow-y: auto;
+            box-sizing: border-box;
+            flex: 1;
+            scroll-behavior: smooth;
+        }
+
+        main section {
+            padding: 20px 40px;
+            width: 100%;
+        }
+
+        main section:not(:first-of-type) {
+            max-width: 80ch;
+            margin: 20px 0;
+        }
+
+        main section:first-of-type {
+            background: #3d3d3d;
+            max-width: 100%;
+            padding: 25px 40px 50px;
+        }
+
+        main section:first-of-type p {
+            font-size: 1.2rem;
+            line-height: 1.75rem;
+            color: white;
+            max-width: 65ch;
+        }
+
+        main section:last-of-type {
+            border-top: 1px solid coral;
+            margin-bottom: 0;
+        }
+
+        main section:last-of-type a {
+            color: coral;
+        }
+
+        main section header.big {
+            margin: 0;
+            padding-bottom: 0.5rem;
+            font-size: 2.5rem;
+            color: coral;
+            font-weight: 600;
+        }
+
+        main section header.big::after {
+            content: ".";
+        }
+
+        main section header {
+            font-size: 2rem;
+            line-height: 2.5rem;
+            color: #222;
+            font-weight: 600;
+        }
+
+        main section h3 {
+            font-size: 1.25rem;
+        }
+
+        main section h3::before {
+            content: "// ";
+            color: coral;
+        }
+
+        main section p {
+            font-size: 1rem;
+            line-height: 1.5rem;
+            max-width: 80ch;
+        }
+
+        main section p span {
+            font-weight: bold;
+            color: coral;
+        }
+
+        main section p code,
+        main section p pre {
+            background: #eee;
+            color: dodgerblue;
+            font-weight: 400;
+            font-family: monospace;
+            padding: 2px 5px;
+            border: 1px solid lightgray;
+            border-radius: 5px;
+        }
+
+        main section pre {
+            background: #eee;
+            color: dodgerblue;
+            font-family: monospace;
+            padding: 10px 20px;
+            line-height: 1.75rem;
+            border: 1px solid lightgray;
+        }
+
+        main section li {
+            padding-left: 20px;
+            border-left: 5px solid rgba(255, 126, 79, 0.5);
+            list-style: none;
+            line-height: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        main section p~h2 {
+            padding-top: 2rem;
+        }
+
+        @media screen and (max-width: 700px) {
+            nav {
+                margin-left: -300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        let isThrottled = false;
+        let body;
+        let link;
+        let links = document.querySelectorAll('.nav-link');
+
+        document.addEventListener("DOMContentLoaded", () => {
+            body = document.querySelector('#main-doc');
+            link = document.querySelector('#intro__Getting_started_with_JavaScript');
+            // links = document.getElementsByClassName('nav-link');
+            // console.log(el.getBoundingClientRect());
+            body.addEventListener("scroll", scrollHander, false);
+            document.addEventListener('click', (e) => clickHander(e));
+        });
+
+        function clickHander(e) {
+        }
+
+        function scrollHander() {
+            if (!isThrottled) {
+                isThrottled = true;
+                checkScrollPosition();
+                setTimeout(() => {
+                    isThrottled = false;
+                }, 33)
+            }
+        }
+
+        function checkScrollPosition() {
+            // console.log('body-top:', body.scrollTop);
+            let bodyTop = body.scrollTop;
+            links.forEach((link) => {
+                let el = document.querySelector(link.hash)
+                // console.log(link.hash, el.getBoundingClientRect().top);
+                if (el.getBoundingClientRect().top <= 150) {
+                    links.forEach((l) => {
+                        if (l.hash === link.hash) {
+                            l.classList.add('focus');
+                        } else {
+                            l.classList.remove('focus');
+                        }
+                    });
+                } else {
+                    link.classList.remove('focus');
+                }
+            });
+        }
+    </script>
+
+    <div id="top-bar">
+        <h1>&lt;/&gt; Docs.js</h1>
+    </div>
+    <div class="container">
+        <nav id="navbar">
+            <header>
+                <a href="#Introduction_to_JS">
+                    Introduction to JS
+                </a>
+            </header>
+            <a class='nav-link' href="#What_you_should_already_know">
+                What you should already know
+            </a>
+            <a class='nav-link' href="#Where_to_find_JS_information">
+                Where to find JS information
+            </a>
+            <a class='nav-link' href="#What_is_JavaScript">
+                What is JavaScript
+            </a>
+            <a class='nav-link' href="#JavaScript_and_Java">
+                JavaScript and Java
+            </a>
+            <a class='nav-link' href="#JavaScript_and_ECMAScript">
+                JavaScript and ECMAScript
+            </a>
+            <a class='nav-link' href="#Getting_started_with_JavaScript">
+                Getting started with JavaScript
+            </a>
+        </nav>
+        <main id="main-doc">
+            <section id="Introduction_to_JS">
+                <header class="big">Introduction to JS</header>
+                <p>
+                    <strong>JavaScript (JS)</strong> is a lightweight interpreted or JIT-compiled programming language
+                    with first-class functions. While it is most well-known as the scripting language for Web pages,
+                    many non-browser environments also use it, such as Node.js, Apache CouchDB and Adobe Acrobat.
+                    JavaScript is a prototype-based, multi-paradigm, dynamic language, supporting object-oriented,
+                    imperative, and declarative (e.g. functional programming) styles. Read more about JavaScript.
+                </p>
+            </section>
+            <section class="main-section" id="What_you_should_already_know">
+                <header>What you should already know</header>
+                <p>
+                    This guide assumes you have the following basic background:
+                    A general understanding of the Internet and the World Wide Web (WWW). Good working knowledge of
+                    HyperText Markup Language (HTML). Some programming experience. If you are new to programming, try
+                    one of the tutorials linked on the main page about JavaScript.
+                </p>
+            </section>
+            <section class="main-section" id="Where_to_find_JS_information">
+                <header>Where to find JS information</header>
+                <p>
+                    The JavaScript documentation on MDN includes the following:
+                    Learning the Web provides information for beginners and introduces basic concepts of programming and
+                    the Internet. JavaScript Guide (this guide) provides an overview about the JavaScript language and
+                    its objects. JavaScript Reference provides detailed reference material for JavaScript. If you are
+                    new to JavaScript, start with the articles in the learning area and the JavaScript Guide. Once you
+                    have a firm grasp of the fundamentals, you can use the JavaScript Reference to get more details on
+                    individual objects and statements.
+                </p>
+            </section>
+            <section class="main-section" id="What_is_JavaScript">
+                <header>What is JavaScript</header>
+                <p>
+                    JavaScript is a cross-platform, object-oriented scripting language used to make webpages interactive
+                    (e.x. having complex animations, clickable buttons, popup menus, etc.). There are also more advanced
+                    server side versions of javascript such as Node.js which allow you to add more functionality to a
+                    website than simply downloading files (such as realtime collaboration between multiple computers).
+                    Inside a host environment (for example, a web browser), JavaScript can be connected to the objects
+                    of its environment to provide programmatic control over them.
+                </p>
+                <p>
+                    JavaScript contains a standard library of objects, such as Array, Date, and Math, and a core set of
+                    language elements such as operators, control structures, and statements. Core JavaScript can be
+                    extended for a variety of purposes by supplementing it with additional objects; for example
+                </p>
+
+                <li>
+                    <strong>Client-side JavaScript</strong> extends the core language by supplying objects to control a
+                    browser and its Document Object Model (DOM). For example, client-side extensions allow an
+                    application to place elements on an HTML form and respond to user events such as mouse clicks, form
+                    input, and page navigation.
+                </li>
+                <li>
+                    <strong>Server-side JavaScript</strong> extends the core language by supplying objects relevant to
+                    running JavaScript on a server. For example, server-side extensions allow an application to
+                    communicate with a database, provide continuity of information from one invocation to another of the
+                    application, or perform file manipulations on a server.
+                    This means that in the browser, JavaScript can change the way the webpage (DOM) looks. And,
+                    likewise, Node.js JavaScript on the server can respond to custom requests from code written in the
+                    browser.
+                </li>
+            </section>
+            <section class="main-section" id="JavaScript_and_Java">
+                <header>JavaScript and Java</header>
+                <p>
+                    JavaScript and Java are similar in some ways but fundamentally different in some others. The
+                    JavaScript language resembles Java but does not have Java's static typing and strong type checking.
+                    JavaScript follows most Java expression syntax, naming conventions and basic control-flow constructs
+                    which was the reason why it was renamed from LiveScript to JavaScript.
+                </p>
+                <p>
+                    In contrast to Java's compile-time system of classes built by declarations, JavaScript supports a
+                    runtime system based on a small number of data types representing numeric, Boolean, and string
+                    values. JavaScript has a prototype-based object model instead of the more common class-based object
+                    model. The prototype-based model provides dynamic inheritance; that is, what is inherited can vary
+                    for individual objects. JavaScript also supports functions without any special declarative
+                    requirements. Functions can be properties of objects, executing as loosely typed methods.
+                </p>
+                <p>
+                    JavaScript is a very free-form language compared to Java. You do not have to declare all variables,
+                    classes, and methods. You do not have to be concerned with whether methods are public, private, or
+                    protected, and you do not have to implement interfaces. Variables, parameters, and function return
+                    types are not explicitly typed.
+                </p>
+                <p>
+                    Java is a class-based programming language designed for fast execution and type safety. Type safety
+                    means, for instance, that you can't cast a Java integer into an object reference or access private
+                    memory by corrupting Java bytecodes. Java's class-based model means that programs consist
+                    exclusively of classes and their methods. Java's class inheritance and strong typing generally
+                    require tightly coupled object hierarchies. These requirements make Java programming more complex
+                    than JavaScript programming.
+                </p>
+                <p>
+                    In contrast, JavaScript descends in spirit from a line of smaller, dynamically typed languages such
+                    as HyperTalk and dBASE. These scripting languages offer programming tools to a much wider audience
+                    because of their easier syntax, specialized built-in functionality, and minimal requirements for
+                    object creation.
+                </p>
+            </section>
+            <section class="main-section" id="JavaScript_and_ECMAScript">
+                <header>JavaScript and ECMAScript</header>
+                <p>
+                    JavaScript is standardized at Ecma International — the European association for standardizing
+                    information and communication systems (ECMA was formerly an acronym for the European Computer
+                    Manufacturers Association) to deliver a standardized, international programming language based on
+                    JavaScript. This standardized version of JavaScript, called ECMAScript, behaves the same way in all
+                    applications that support the standard. Companies can use the open standard language to develop
+                    their implementation of JavaScript. The ECMAScript standard is documented in the ECMA-262
+                    specification. See New in JavaScript to learn more about different versions of JavaScript and
+                    ECMAScript specification editions.
+                </p>
+                <p>
+                    The ECMA-262 standard is also approved by the ISO (International Organization for Standardization)
+                    as ISO-16262. You can also find the specification on the Ecma International website. The ECMAScript
+                    specification does not describe the Document Object Model (DOM), which is standardized by the World
+                    Wide Web Consortium (W3C) and/or WHATWG (Web Hypertext Application Technology Working Group). The
+                    DOM defines the way in which HTML document objects are exposed to your script. To get a better idea
+                    about the different technologies that are used when programming with JavaScript, consult the article
+                    JavaScript technologies overview.
+                </p>
+                <h3>JavaScript documentation versus the ECMAScript specification</h3>
+                <p>
+                    The ECMAScript specification is a set of requirements for implementing ECMAScript; it is useful if
+                    you want to implement standards-compliant language features in your ECMAScript implementation or
+                    engine (such as SpiderMonkey in Firefox, or V8 in Chrome).
+                </p>
+                <p>
+                    The ECMAScript document is not intended to help script programmers; use the JavaScript documentation
+                    for information on writing scripts.
+                </p>
+                <p>
+                    The ECMAScript specification uses terminology and syntax that may be unfamiliar to a JavaScript
+                    programmer. Although the description of the language may differ in ECMAScript, the language itself
+                    remains the same. JavaScript supports all functionality outlined in the ECMAScript specification.
+                </p>
+                <p>
+                    The JavaScript documentation describes aspects of the language that are appropriate for a JavaScript
+                    programmer.
+                </p>
+            </section>
+            <section class="main-section" id="Getting_started_with_JavaScript">
+                <header>Getting started with JavaScript</header>
+                <p>
+                    Getting started with JavaScript is easy: all you need is a modern Web browser. This guide includes
+                    some JavaScript features which are only currently available in the latest versions of Firefox, so
+                    using the most recent version of Firefox is recommended.
+                </p>
+                <p>
+                    There are two tools built into Firefox that are useful for experimenting with JavaScript:
+                    <strong>the Web Console</strong> and <strong>Scratchpad</strong>.
+                </p>
+
+                <h3>The Web Console</h3>
+                <p>
+                    The Web Console shows you information about the currently loaded Web page, and also includes a
+                    command line that you can use to execute JavaScript expressions in the current page
+                </p>
+
+                <p>
+                    To open the Web Console (<code class="code">Ctrl</code>+<code class="code">Shift</code>+<code
+                        class="code">I</code> on Windows and Linux or <code class="code">Cmd</code>+<code
+                        class="code">Option</code>+<code class="code">K</code> on Mac), select "Web Console" from the
+                    "Developer" menu, which is under the "Tools" menu in Firefox. It appears at the bottom of the
+                    browser window. Along the bottom of the console is a command line that you can use to enter
+                    JavaScript, and the output appears in the panel above.
+                </p>
+                <p>
+                    The console works the exact same way as eval: the last expression entered is returned. For the sake
+                    of simplicity, it can be imagined that every time something is entered into the console, it is
+                    actual surrounded by console.log around eval like so.
+                </p>
+                <pre>
+    function greetMe(yourName) {
+      alert('Hello ' + yourName);
+    }
+    console.log(eval('3 + 5'));
+    </pre>
+
+                <h3>Scratchpad</h3>
+                <p>
+                    The Web Console is great for executing single lines of JavaScript, but although you can execute
+                    multiple lines, it's not very convenient for that, and you can't save your code samples using the
+                    Web Console. So for more complex examples Scratchpad is a better tool.
+                </p>
+
+                <p>
+                    To open Scratchpad (<code class="code">Shift</code>+<code class="code">F4</code>), select
+                    "Scratchpad" from the "Developer" menu, which is under the menu in Firefox. It opens in a separate
+                    window and is an editor that you can use to write and execute JavaScript in the browser. You can
+                    also save scripts to disk and load them from disk.
+                </p>
+                <h3>Hello world</h3>
+                <p>
+                    To get started with writing JavaScript, open the Scratchpad and write your first "Hello world"
+                    JavaScript code:
+                </p>
+
+                <pre>
+    (function(){
+      "use strict";
+      /* Start of your code */
+      function greetMe(yourName) {
+        alert('Hello ' + yourName);
+      }
+      
+      greetMe('World');
+      /* End of your code */
+    })();
+    </pre>
+                <p>
+                    Select the code in the pad and hit <code class="code">Ctrl</code>+<code class="code">R</code> to
+                    watch it unfold in your browser! In the following pages, this guide will introduce you to the
+                    JavaScript syntax and language features, so that you will be able to write more complex
+                    applications. But, for the time being, remember to always include the <code
+                        class="code">(function(){"use strict";</code> before your code, and add <code
+                        class="code">})();</code> to the end of your code. You will learn what these mean, but for now
+                    they can be thought of as doing the following —
+                </p>
+
+                <li>Massively improve performance</li>
+
+                <li>Prevent stupid semantics in JavaScript that trip up beginners</li>
+                <li>
+                    Prevent code snippets executed in the console from interacting with one-another (e.g. having
+                    something created in one console execution being used for a different console execution).
+                </li>
+            </section>
+            <section>
+                <p>Documentation taken from the <a
+                        href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Introduction">MDN web docs -
+                        JavaScript Guide</a>.</p>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>

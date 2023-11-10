@@ -177,6 +177,7 @@ function mAbc(_r = 1, a = "", b = "", c = "", d = "", e = "", f = 1) {
 
   return ss;
 }
+
 function dataToList(data) {
   function qua(u) {
     const n = ["", "C", "S", "M", "K", "A"];
