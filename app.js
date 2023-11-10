@@ -18,6 +18,11 @@ app.use(cors(corsOptions));
 // });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+
+const now = new Date();
+const currentMonth = now.toLocaleString("default", { month: "short" });
+
 // Middleware para verificar o token de autenticação
 const authenticateToken = (req, res, next) => {
   // Verifique o token de autenticação aqui
@@ -4646,8 +4651,7 @@ app.get("/order-shipment/orders/", (req, res) => {
   });
 });
 
-const now = new Date();
-const currentMonth = now.toLocaleString("default", { month: "short" });
+
 
 let dataDriver = {
   drivers: [
@@ -7347,9 +7351,6 @@ app.post("/siglog/wms/listen", (req, res) => {
   console.log(JSON.stringify(driverAssistant, null, 4));
 });
 
-app.listen(port, () => {
-  console.log(`Servidor rodando na porta ${port}`);
-});
 
 // Inicie o servidor
 app.listen(3077, () => {
