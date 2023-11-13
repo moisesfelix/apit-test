@@ -7352,7 +7352,7 @@ app.post("/siglog/wms/listen", (req, res) => {
 
 app.post("/gerar-qrcode", async (req, res) => {
   try {
-    const { url } = req.query;
+    const { url } = req.body;
 
     if (!url) {
       return res.status(400).json({ error: "A URL é obrigatória." });
