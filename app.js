@@ -3,6 +3,8 @@ const app = express();
 const format = require("date-fns/format");
 const cors = require("cors");
 const { default: axios } = require("axios");
+const qrCode = require("qrcode");
+
 const corsOptions = {
   origin: true,
 };
@@ -18,7 +20,6 @@ app.use(cors(corsOptions));
 // });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 const now = new Date();
 const currentMonth = now.toLocaleString("default", { month: "short" });
@@ -4651,8 +4652,6 @@ app.get("/order-shipment/orders/", (req, res) => {
   });
 });
 
-
-
 let dataDriver = {
   drivers: [
     {
@@ -7351,6 +7350,27 @@ app.post("/siglog/wms/listen", (req, res) => {
   console.log(JSON.stringify(driverAssistant, null, 4));
 });
 
+app.get("/gerar-qrcode", async (req, res) => {
+  try {
+    const { url } = req.query;
+
+    if (!url) {
+      return res.status(400).json({ error: "A URL é obrigatória." });
+    }
+
+    // Gera o código QR como um buffer
+    const qrCodeBuffer = await qrCode.toBuffer(url);
+
+    // Configura o cabeçalho Content-Type para imagem PNG
+    res.setHeader("Content-Type", "image/png");
+
+    // Envia a imagem do código QR como resposta
+    res.send(qrCodeBuffer);
+  } catch (error) {
+    console.error("Erro ao gerar o QR Code:", error);
+    res.status(500).json({ error: "Erro interno do servidor." });
+  }
+});
 
 // Inicie o servidor
 app.listen(3077, () => {
