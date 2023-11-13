@@ -7350,7 +7350,7 @@ app.post("/siglog/wms/listen", (req, res) => {
   console.log(JSON.stringify(driverAssistant, null, 4));
 });
 
-app.get("/gerar-qrcode", async (req, res) => {
+app.post("/gerar-qrcode", async (req, res) => {
   try {
     const { url } = req.query;
 
