@@ -571,7 +571,6 @@ const generateFakeOrders = () => {
   }
   return fakeOrders;
 };
-
 app.get("/orders/", (req, res) => {
   console.log("/orders/");
   const orders = [
@@ -7371,6 +7370,133 @@ app.post("/gerar-qrcode", async (req, res) => {
     res.status(500).json({ error: "Erro interno do servidor." });
   }
 });
+
+app.get("/order-shipment/os", (req, res) => {
+  console.log("/order-shipment/os");
+  const orders = [
+    {
+      id: "efae8906-6aaa-4a58-a76b-3bb9fdecb0c0",
+      number: "5111",
+      delivery_type: "ENTREGA",
+      delivery_group: "DELIVERY",
+      customer: {
+        federal_id: "",
+        name: "PMF CAVALÃO - FRANK PAÍS GARCIA",
+        trade_name: "PMF CAVALÃO - FRANK PAÍS GARCIA",
+        photo_url: null,
+      },
+      address: {
+        postcode: "24360018",
+        street: "ALAMEDA PARIS",
+        number: "",
+        district: "SÃO FRANCISCO",
+        latitude: -22.912545,
+        longitude: -43.102992,
+        city: "NITEROI",
+        state: "RJ",
+        details: ",",
+        country: "undefined",
+      },
+      company: {
+        name: "FMS Niterói",
+        public_id: "3b5be590-ed53-4e46-bbf1-f964fff47493",
+      },
+      loadingPlace: "G1",
+      volume: 10,
+      price: 123,
+      cubage: 1,
+      delivery_date: "2023-11-13T19:13:10.372Z",
+    },
+    {
+      id: "efae8906-6aaa-4a58-a76b-3bb9f5ecb0c0",
+      number: "5141",
+      delivery_type: "ENTREGA",
+      delivery_group: "DELIVERY",
+      customer: {
+        federal_id: "",
+        name: "PMF CAVALÃO - FRANK PAÍS GARCIA",
+        trade_name: "PMF CAVALÃO - FRANK PAÍS GARCIA",
+        photo_url: null,
+      },
+      address: {
+        postcode: "24360018",
+        street: "ALAMEDA PARIS",
+        number: "",
+        district: "SÃO FRANCISCO",
+        latitude: -22.912545,
+        longitude: -43.102992,
+        city: "NITEROI",
+        state: "RJ",
+        details: ",",
+        country: "undefined",
+      },
+      company: {
+        name: "FMS Niterói",
+        public_id: "3b5be590-ed53-4e46-bbf1-f964fff47493",
+      },
+      loadingPlace: "G2",
+      volume: 10,
+      price: 123,
+      cubage: 1,
+      delivery_date: "2023-11-13T19:13:10.372Z",
+    },
+    {
+      id: "efae8906-6aaa-4a58-u76b-3bb9fdecb0c0",
+      number: "5118",
+      delivery_type: "ENTREGA",
+      delivery_group: "DELIVERY",
+      customer: {
+        federal_id: "",
+        name: "PMF CAVALÃO - FRANK PAÍS GARCIA",
+        trade_name: "PMF CAVALÃO - FRANK PAÍS GARCIA",
+        photo_url: null,
+      },
+      address: {
+        postcode: "24360018",
+        street: "ALAMEDA PARIS",
+        number: "",
+        district: "SÃO FRANCISCO",
+        latitude: -22.912545,
+        longitude: -43.102992,
+        city: "NITEROI",
+        state: "RJ",
+        details: ",",
+        country: "undefined",
+      },
+      company: {
+        name: "FMS Niterói",
+        public_id: "3b5be590-ed53-4e46-bbf1-f964fff47493",
+      },
+      loadingPlace: "G2",
+      volume: 10,
+      price: 123,
+      cubage: 1,
+      delivery_date: "2023-11-13T19:13:10.372Z",
+    },
+  ];
+  res.status(200).json(orders);
+});
+
+const orderShipmentRoutesOrderToPreview = require("./src/routes/order-shipment/order-to-preview");
+const orderShipmentRoutesOrderToSend = require("./src/routes/order-shipment/order-to-send");
+const orderShipmentRoutesOrder = require("./src/routes/order");
+const shippingManifestRoutes = require("./src/routes/shipping-manifest/shipping-manifest");
+const shippingManifestRoutesItinerary = require("./src/routes/shipping-manifest/itinerary");
+const shippingManifestRoutesOrder = require("./src/routes/shipping-manifest/order");
+
+app.use("/shipping-manifest777777/order-to-preview", shippingManifestRoutes);
+app.use("/shipping-manifest777777/itinerary", shippingManifestRoutesItinerary);
+app.use("/shipping-manifest777777/order", shippingManifestRoutesOrder);
+
+
+app.use("/order-shipment777777/order-to-preview",orderShipmentRoutesOrderToPreview);
+app.use("/order-shipment777777/order-sent", orderShipmentRoutesOrderToSend);
+
+
+app.use("/order77777/order", orderShipmentRoutesOrder);
+
+
+
 
 // Inicie o servidor
 app.listen(3077, () => {
