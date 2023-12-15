@@ -12,6 +12,16 @@ module.exports = Object.freeze({
 
     return res.status(200).json(data);
   },
+  getOneTask(req, res) {
+    const { id, taskId } = req.params;
+    console.log({ id, taskId });
+    const data = dataItinerary.getItineraryIdAndTaskById(id, taskId);
+    if (data) {
+      return res.status(200).json(data);
+    } else {
+      return res.status(400).json({ message: "Task not found" });
+    }
+  },
   createOne(req, res) {
     const input = req.body;
     dataItinerary.createItinerary(input);

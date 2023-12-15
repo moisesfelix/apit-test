@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Árvore CSMKA com Movimentação</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="csmkaTree" width="500" height="500"></canvas>
+  <script>
+    const canvas = document.getElementById('csmkaTree');
+    const ctx = canvas.getContext('2d');
+    let selectedNodeIndex = 0;
+
+    const treeStructure = [
+      { label: 'C', x: 250, y: 50 },
+      { label: 'S', x: 150, y: 150 },
+      { label: 'M', x: 100, y: 250 },
+      { label: 'K', x: 50, y: 350 },
+      { label: 'A', x: 200, y: 350 },
+      { label: 'K', x: 350, y: 150 },
+      { label: 'A', x: 300, y: 250 },
+      { label: 'A', x: 400, y: 250 },
+      { label: 'K', x: 250, y: 350 },
+      { label: 'M', x: 200, y: 450 },
+      { label: 'K', x: 300, y: 450 },
+      { label: 'C', x: 150, y: 550 },
+      { label: 'M', x: 250, y: 550 },
+    ];
+
+    function drawTree() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      treeStructure.forEach((node, index) => {
+        // Desenha as conexões
+        if (index !== 0) {
+          const parent = treeStructure[Math.floor((index - 1) / 2)];
+          ctx.beginPath();
+          ctx.moveTo(parent.x + 20, parent.y + 20);
+          ctx.lineTo(node.x + 20, node.y);
+          ctx.stroke();
+        }
+
+        // Desenha os nós da árvore
+        ctx.beginPath();
+        ctx.arc(node.x + 20, node.y, 20, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.fillText(node.label, node.x + 15, node.y + 5);
+      });
+
+      // Destaca o nó selecionado
+      const selectedNode = treeStructure[selectedNodeIndex];
+      ctx.fillStyle = 'red';
+      ctx.beginPath();
+      ctx.arc(selectedNode.x + 20, selectedNode.y, 20, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.fillStyle = 'black';
+    }
+
+    function handleKeyPress(event) {
+      switch (event.key) {
+        case 'ArrowUp':
+          selectedNodeIndex = Math.floor((selectedNodeIndex - 1) / 2);
+          break;
+        case 'ArrowDown':
+          const leftChild = selectedNodeIndex * 2 + 1;
+          const rightChild = selectedNodeIndex * 2 + 2;
+          selectedNodeIndex = leftChild < treeStructure.length ? leftChild : rightChild;
+          break;
+        case 'ArrowLeft':
+          selectedNodeIndex = Math.floor((selectedNodeIndex - 1) / 2);
+          break;
+        case 'ArrowRight':
+          const leftChildIndex = selectedNodeIndex * 2 + 1;
+          selectedNodeIndex = leftChildIndex < treeStructure.length ? leftChildIndex : selectedNodeIndex;
+          break;
+      }
+
+      drawTree();
+    }
+
+    document.addEventListener('keydown', handleKeyPress);
+    drawTree();
+  </script>
+</body>
+</html>

@@ -1,15 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-const OrderController = require("../../controllers/shipping-manifest/order");
+const OrderController = require("../../controllers/drivers/order");
 
 router.get("/", OrderController.getAll);
 
 router.get("/:id", OrderController.getOne);
 
-router.post("/order", OrderController.createOne);
-
-router.post("/", OrderController.createMany);
+router.post("/load", OrderController.loadOrderIntoDriver);
 
 router.delete("/:id", OrderController.delete);
 

@@ -54,6 +54,45 @@ function deleteItineraryById(id) {
 
   return null;
 }
+function updateItineraryByItineraryIdAndOrderId(itineraryId, taskId, orderId) {
+  console.log({ itineraryId, taskId, orderId });
+  const itinerary = itineraryList.find((obj) => obj.id === itineraryId);
+
+  if (itinerary) {
+    const task = itinerary.tasks.find((task) => task.id === taskId);
+
+    if (task) {
+      const order = task.orders.find((order) => order.id === orderId);
+      if (order) {
+        order.status = "loaded";
+
+        console.log("Objeto atualizado:", task);
+        return true;
+      } else {
+        console.log("Pedido não encontrado pelo ID:", taskId);
+        return false;
+      }
+    } else {
+      console.log("Tarefa não encontrada pelo ID:", taskId);
+      return false;
+    }
+  } else {
+    console.log("Itinerário não encontrado pelo ID:", itineraryId);
+    return false;
+  }
+}
+function getItineraryIdAndTaskById(itineraryId, taskId) {
+  const itineraries = itineraryList;
+  const itinerary = itineraries.find((it) => it.id === itineraryId);
+
+  if (!itinerary) {
+    return false;
+  }
+
+  const task = itinerary.tasks.find((t) => t.id === taskId);
+
+  return task || false;
+}
 
 module.exports = {
   getItineraryList,
@@ -63,4 +102,6 @@ module.exports = {
   updateItineraryById,
   deleteItineraryById,
   itineraryList,
+  getItineraryIdAndTaskById,
+  updateItineraryByItineraryIdAndOrderId,
 };

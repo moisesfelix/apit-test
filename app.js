@@ -5,10 +5,17 @@ const cors = require("cors");
 const { default: axios } = require("axios");
 const qrCode = require("qrcode");
 
+const multer = require("multer");
+const { decode } = require("jsqr");
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 const corsOptions = {
   origin: true,
 };
 app.use(cors(corsOptions));
+app.use(express.json({ limit: '50mb' }));
 // Configurar os cabeçalhos CORS
 
 // app.use((req, res, next) => {
@@ -314,7 +321,7 @@ app.post("/register/reset-password", (req, res) => {
   res.json(passwordReset);
 });
 
-app.post("/upload", (req, res) => {
+app.post("/upload3", (req, res) => {
   // Lógica para lidar com o upload de arquivos
   // Dados fictícios para fins de exemplo
   const files = req.files;
@@ -7483,20 +7490,44 @@ const orderShipmentRoutesOrder = require("./src/routes/order");
 const shippingManifestRoutes = require("./src/routes/shipping-manifest/shipping-manifest");
 const shippingManifestRoutesItinerary = require("./src/routes/shipping-manifest/itinerary");
 const shippingManifestRoutesOrder = require("./src/routes/shipping-manifest/order");
+const driversRouter = require("./src/routes/drivers/journey");
+const driversRoutesItinerary = require("./src/routes/drivers/itinerary");
+const driversOrderRouter = require("./src/routes/drivers/order");
 
 app.use("/shipping-manifest777777/order-to-preview", shippingManifestRoutes);
 app.use("/shipping-manifest777777/itinerary", shippingManifestRoutesItinerary);
 app.use("/shipping-manifest777777/order", shippingManifestRoutesOrder);
 
-
-app.use("/order-shipment777777/order-to-preview",orderShipmentRoutesOrderToPreview);
+app.use(
+  "/order-shipment777777/order-to-preview",
+  orderShipmentRoutesOrderToPreview
+);
 app.use("/order-shipment777777/order-sent", orderShipmentRoutesOrderToSend);
 
-
 app.use("/order77777/order", orderShipmentRoutesOrder);
+app.use("/drivers/journey/", driversRouter);
 
+app.use("/drivers/order/", driversOrderRouter);
+app.use("/drivers/itinerary/", driversRoutesItinerary);
 
+app.post("/upload", upload.single("qrImage"), (req, res) => {
+  try {
+    const imageData = req.file.buffer;
 
+    // Decodifica o QR code usando a biblioteca jsqr
+    const code = decode(imageData);
+
+    if (code) {
+      // Envia o conteúdo do QR code como resposta
+      res.json({ content: code.data });
+    } else {
+      res.status(500).json({ error: "QR code não detectado na imagem." });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Erro ao processar a imagem QR code." });
+  }
+});
 
 // Inicie o servidor
 app.listen(3077, () => {
