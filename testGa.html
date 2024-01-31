@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Jogo com Movimentos Diagonais</title>
+</head>
+
+<body>
+    <canvas id="gameCanvas" width="800" height="600" style="border: 1px solid rgb(121, 200, 234);"></canvas>
+    <script>
+        var canvas = document.getElementById('gameCanvas');
+        var ctx = canvas.getContext('2d');
+
+        var player = { x: canvas.width / 2, y: canvas.height / 2, width: 50, height: 50 };
+        var camera = { x: 0, y: 0, width: canvas.width, height: canvas.height };
+        var lineLength = 50; // Comprimento fixo para as linhas
+        var vertexRadius = 5; // Raio das esferas nos vértices
+
+        // Adicionando elementos estáticos ao cenário
+        var elements = [
+            { x: 100, y: 150, width: 30, height: 30, color: 'green' },
+            { x: 300, y: 250, width: 40, height: 40, color: 'brown' },
+            { x: 500, y: 350, width: 25, height: 25, color: 'darkgreen' },
+        ];
+
+        var lines = [{ startX: player.x, startY: player.y, endX: player.x, endY: player.y + lineLength }];
+
+        var ctrlPressed = false; // Variável para verificar se a tecla "Ctrl" está pressionada
+
+        // Event Listener para a tecla "Ctrl"
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Control') {
+                ctrlPressed = true;
+            }
+        });
+
+        document.addEventListener('keyup', function (e) {
+            if (e.key === 'Control') {
+                ctrlPressed = false;
+            }
+        });
+
+        function updateCamera() {
+            // Atualiza a posição da câmera para seguir o jogador
+            camera.x = player.x - canvas.width / 2;
+            camera.y = player.y - canvas.height / 2;
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Desenha elementos estáticos ajustados pela câmera
+            elements.forEach(function (element) {
+                ctx.fillStyle = element.color;
+                ctx.fillRect(element.x - camera.x, element.y - camera.y, element.width, element.height);
+            });
+
+            // Desenha todas as linhas ajustadas pela câmera
+            lines.forEach(function (line) {
+                ctx.beginPath();
+                ctx.moveTo(line.startX - camera.x, line.startY - camera.y);
+                ctx.lineTo(line.endX - camera.x, line.endY - camera.y);
+                ctx.strokeStyle = 'black';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Desenha esfera no final da linha
+                ctx.beginPath();
+                var gradient = ctx.createRadialGradient(line.endX - camera.x, line.endY - camera.y, 0, line.endX - camera.x, line.endY - camera.y, vertexRadius);
+                gradient.addColorStop(0, 'white');
+                gradient.addColorStop(1, 'gray');
+                ctx.fillStyle = gradient;
+                ctx.arc(line.endX - camera.x, line.endY - camera.y, vertexRadius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Atualiza a posição do jogador para o fim da última linha
+            var lastLine = lines[lines.length - 1];
+            player.x = lastLine.endX;
+            player.y = lastLine.endY;
+        }
+
+        document.addEventListener('keydown', function (e) {
+            var lastLine = lines[lines.length - 1];
+            var newLine = { startX: lastLine.endX, startY: lastLine.endY, endX: lastLine.endX, endY: lastLine.endY };
+
+            switch (e.keyCode) {
+                case 37: // Esquerda
+                    if (!ctrlPressed) {
+                        newLine.endX -= lineLength;
+                    } else {
+                        newLine.endX -= lineLength / 2;
+                        newLine.endY -= lineLength / 2;
+                    }
+                    break;
+                case 38: // Cima
+                    if (!ctrlPressed) {
+                        newLine.endY -= lineLength;
+                    } else {
+                        newLine.endX += lineLength / 2;
+                        newLine.endY -= lineLength / 2;
+                    }
+                    break;
+                case 39: // Direita
+                    if (!ctrlPressed) {
+                        newLine.endX += lineLength;
+                    } else {
+                        newLine.endX += lineLength / 2;
+                        newLine.endY += lineLength / 2;
+                    }
+                    break;
+                case 40: // Baixo
+                    if (!ctrlPressed) {
+                        newLine.endY += lineLength;
+                    } else {
+                        newLine.endX -= lineLength / 2;
+                        newLine.endY += lineLength / 2;
+                    }
+                    break;
+            }
+
+            lines.push(newLine);
+            updateCamera();
+            draw(); // Redesenha imediatamente após o movimento
+        });
+
+        // Desenha a cena inicial e inicia o loop do jogo
+        function gameLoop() {
+            updateCamera();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        gameLoop();
+    </script>
+</body>
+
+</html>

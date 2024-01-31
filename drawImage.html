@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    canvas {
+      border: 1px solid #000;
+      display: block;
+      margin: 20px auto;
+    }
+  </style>
+  <title>CSMKA Tree</title>
+</head>
+<body>
+
+<canvas id="csmkaCanvas" width="800" height="600"></canvas>
+
+<script>
+  const canvas = document.getElementById('csmkaCanvas');
+  const ctx = canvas.getContext('2d');
+  const nodeRadius = 30;
+  const arrowLength = 40;
+  const arrowAngle = Math.PI / 6;
+
+  // Representação da árvore CSMKA
+  const tree = {
+    title: "Root",
+    children: [
+      { title: "Child 1" },
+      { title: "Child 2",
+        children: [
+          { title: "Grandchild 1" },
+          { title: "Grandchild 2" }
+        ]
+      },
+      { title: "Child 3" }
+    ]
+  };
+
+  // Posição inicial do nó raiz
+  let currentX = canvas.width / 2;
+  let currentY = 50;
+
+  // Função para desenhar um nó
+  function drawNode(x, y, title) {
+    ctx.beginPath();
+    ctx.arc(x, y, nodeRadius, 0, 2 * Math.PI);
+    ctx.fillStyle = '#87CEEB';
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#000';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '12px Arial';
+    ctx.fillText(title, x, y);
+  }
+
+  // Função para desenhar uma seta
+  function drawArrow(x1, y1, x2, y2) {
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - arrowLength * Math.cos(angle - arrowAngle), y2 - arrowLength * Math.sin(angle - arrowAngle));
+    ctx.lineTo(x2 - arrowLength * Math.cos(angle + arrowAngle), y2 - arrowLength * Math.sin(angle + arrowAngle));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Função para desenhar a árvore CSMKA recursivamente
+  function drawTree(node, x, y) {
+    drawNode(x, y, node.title);
+
+    if (node.children) {
+      const childY = y + 2 * nodeRadius;
+      const childXs = Array.from({ length: node.children.length }, (_, i) => x - node.children.length * nodeRadius + i * 2 * nodeRadius);
+
+      node.children.forEach((child, i) => {
+        const childX = childXs[i];
+        drawArrow(x, y + nodeRadius, childX, childY - nodeRadius);
+        drawTree(child, childX, childY);
+      });
+    }
+  }
+
+  // Função para limpar o canvas
+  function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  // Função para lidar com as setas do teclado
+  function handleKeyPress(event) {
+    switch (event.key) {
+      case 'ArrowLeft':
+        currentX -= 20;
+        break;
+      case 'ArrowRight':
+        currentX += 20;
+        break;
+      case 'ArrowUp':
+        currentY -= 20;
+        break;
+      case 'ArrowDown':
+        currentY += 20;
+        break;
+    }
+
+    // Limpar o canvas e redesenhar a árvore na nova posição
+    clearCanvas();
+    drawTree(tree, currentX, currentY);
+  }
+
+  // Adicionar ouvinte de eventos para as teclas de seta
+  window.addEventListener('keydown', handleKeyPress);
+
+  // Desenhar a árvore inicial
+  drawTree(tree, currentX, currentY);
+</script>
+
+</body>
+</html>

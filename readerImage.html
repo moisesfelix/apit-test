@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Ler padrão de imagem</title>
+</head>
+
+<body>
+    <h1>Ler padrão de imagem</h1>
+
+    <input type="file" id="image" accept="image/png, image/jpeg">
+
+    <button id="submit">Enviar imagem</button>
+
+    <div id="output"></div>
+
+    <script>
+        function readImagePattern(image) {
+            // Obtém as dimensões da imagem
+            const width = image.naturalWidth;
+            const height = image.naturalHeight;
+
+            // Obtém as coordenadas das setas
+            const topArrowX = (width - 20) / 2;
+            const topArrowY = 20;
+            const bottomArrowX = (width - 20) / 2;
+            const bottomArrowY = height - 20;
+
+            // Obtém as cores das setas usando a API FileReader
+            const reader = new FileReader();
+            reader.onload = function () {
+                const arrayBuffer = reader.result;
+                const pixels = new Uint8Array(arrayBuffer);
+
+                // Calcule o índice do pixel da seta superior
+                const topArrowIndex = (topArrowY * image.naturalWidth + topArrowX) * 4;
+
+                // Calcule o índice do pixel da seta inferior
+                const bottomArrowIndex = (bottomArrowY * image.naturalWidth + bottomArrowX) * 4;
+
+                // Extraia as cores dos pixels das setas
+                const topArrowColor = [pixels[topArrowIndex], pixels[topArrowIndex + 1], pixels[topArrowIndex + 2]];
+                const bottomArrowColor = [pixels[bottomArrowIndex], pixels[bottomArrowIndex + 1], pixels[bottomArrowIndex + 2]];
+
+                // Verifique se as condições para identificar as setas são satisfeitas
+                const isTopArrowBlack = topArrowColor[0] === 0 && topArrowColor[1] === 0 && topArrowColor[2] === 0;
+                const isBottomArrowWhite = bottomArrowColor[0] === 255 && bottomArrowColor[1] === 255 && bottomArrowColor[2] === 255;
+                const isTopArrowWideEnough = topArrowColor.length >= 10;
+                const isTopArrowTallEnough = topArrowColor.length >= 10;
+                const isTopArrowCentered = topArrowX === width / 2 && topArrowY === height / 2;
+
+                if (isTopArrowBlack && isBottomArrowWhite && isTopArrowWideEnough && isTopArrowTallEnough && isTopArrowCentered) {
+                    return "A escolha leva a um resultado positivo";
+                } else {
+                    return "A interpretação do padrão é desconhecida";
+                }
+            };
+
+            reader.readAsArrayBuffer(image);
+        }
+
+        document.getElementById('submit').addEventListener('click', function () {
+            const image = document.getElementById('image').files[0];
+
+            // Use a função readImagePattern() para obter a interpretação do padrão
+            const interpretation = readImagePattern(image);
+
+            // Exiba a interpretação na tela
+            document.getElementById('output').textContent = interpretation;
+        });
+    </script>
+</body>
+
+</html>

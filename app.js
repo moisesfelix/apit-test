@@ -4,7 +4,7 @@ const format = require("date-fns/format");
 const cors = require("cors");
 const { default: axios } = require("axios");
 const qrCode = require("qrcode");
-
+const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const { decode } = require("jsqr");
 
@@ -15,7 +15,7 @@ const corsOptions = {
   origin: true,
 };
 app.use(cors(corsOptions));
-app.use(express.json({ limit: '50mb' }));
+app.use(express.json({ limit: "50mb" }));
 // Configurar os cabeçalhos CORS
 
 // app.use((req, res, next) => {
@@ -47,22 +47,25 @@ const authenticateToken = (req, res, next) => {
 
 // Defina as rotas da sua API
 app.get("/auth/me", (req, res) => {
-  const userData = {
-    id: 1,
-    role: "admin",
-    password: "admin",
-    fullName: "John Doe",
-    username: "johndoe",
-    email: "admin@materio.com",
-    lang_key: "string",
-    avatar_uri: "string",
-    scope: "string",
+  const authMe = {
+    userData: {
+      id: "8545b7de-030a-43bd-84ea-5c1213e5405c",
+      role: "admin",
+      fullName: "Moises Felix",
+      username: "Moises",
+      email: "moises.vanilla.js@gmail.com",
+      lang_key: "pt-br",
+      avatar_uri: "",
+      scope: "ROLE_ADMIN",
+    },
+    account: {
+      id: "fd9bbc0f-6758-4fef-813e-a408c3e065da",
+      name: "SESRJ",
+    },
+    accessToken:
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzSW4iOiIzMGQiLCJpYXQiOjE3MDM3OTU0ODk4MzYsImlkIjoiODU0NWI3ZGUtMDMwYS00M2JkLTg0ZWEtNWMxMjEzZTU0MDVjIiwiZW1haWwiOiJtb2lzZXMudmFuaWxsYS5qc0BnbWFpbC5jb20iLCJzY29wZSI6IlJPTEVfQURNSU4iLCJyZCI6Ijc4MjYwMWE0ZWRmNTE4OGE2NmJmNjMxY2NkMzJmNDc0IiwiYWNjb3VudF9pZCI6ImZkOWJiYzBmLTY3NTgtNGZlZi04MTNlLWE0MDhjM2UwNjVkYSJ9.dpxgFXK1xkP4_EENdoYn8mEA7iqQzxb2wMCH4vQbGoM",
   };
-  res.json({
-    userData,
-    accessToken: req.accessToken,
-    account: 1,
-  });
+  res.json(authMe);
 });
 
 app.get("/dashboard", (req, res) => {
@@ -78,39 +81,57 @@ app.get("/dashboard", (req, res) => {
 app.get("/accounts", (req, res) => {
   const accountsData = [
     {
-      scopes: "ADMIN",
+      scopes: "ROLE_ADMIN",
       name: "SESRJ",
       id: "fd9bbc0f-6758-4fef-813e-a408c3e065da",
     },
     {
-      scopes: "ADMIN",
+      scopes: "ROLE_ADMIN",
       name: "Viva Rio HO",
       id: "ec837049-b5c4-4651-bfad-538441799922",
+    },
+    {
+      scopes: "ROLE_ADMIN",
+      name: "FMS Niterói",
+      id: "3b5be590-ed53-4e46-bbf1-f964fff47493",
+    },
+    {
+      scopes: "ROLE_ADMIN",
+      name: "FSERJ",
+      id: "6701d952-70f7-4288-9407-9a10be4e7428",
+    },
+    {
+      scopes: "ROLE_ADMIN",
+      name: "SEMUS",
+      id: "1d3f0f7e-a6ee-4cba-87eb-7a29b1fc40cc",
     },
   ];
   res.json({ accounts: accountsData });
 });
 
 app.post("/accounts/use", (req, res) => {
-  const userData = {
-    id: 1,
-    role: "admin",
-    password: "admin",
-    fullName: "John Doe",
-    username: "johndoe",
-    email: "admin@materio.com",
-    lang_key: "string",
-    avatar_uri: "string",
-    scope: "string",
+  const account = {
+    userData: {
+      id: "8545b7de-030a-43bd-84ea-5c1213e5405c",
+      role: "admin",
+      fullName: "Moises Felix",
+      username: "Moises",
+      email: "moises.vanilla.js@gmail.com",
+      lang_key: "pt-br",
+      avatar_uri: "",
+      scope: "ROLE_ADMIN",
+    },
+    account: {
+      id: "fd9bbc0f-6758-4fef-813e-a408c3e065da",
+      name: "SESRJ",
+    },
+    accessToken:
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzSW4iOiIzMGQiLCJpYXQiOjE3MDM3OTQ1MTgyNTUsImlkIjoiODU0NWI3ZGUtMDMwYS00M2JkLTg0ZWEtNWMxMjEzZTU0MDVjIiwiZW1haWwiOiJtb2lzZXMudmFuaWxsYS5qc0BnbWFpbC5jb20iLCJzY29wZSI6IlJPTEVfQURNSU4iLCJyZCI6IjY1ZDhlNjQwYzFlN2FjZDIxMzNhZWZmNWFiMmUyODBlIiwiYWNjb3VudF9pZCI6ImZkOWJiYzBmLTY3NTgtNGZlZi04MTNlLWE0MDhjM2UwNjVkYSJ9.ARbNvn4Cl-0Dnxi8uLTe6GSmRkPD4hVe23jSghbDEcQ",
   };
-  res.json({
-    userData,
-    accessToken: req.accessToken,
-    account: 1,
-  });
+  res.json(account);
 });
 
-app.post("/auth/jwt/login/", (req, res) => {
+app.post("/auth/jwt/login/2", (req, res) => {
   const { username, password } = req.body;
   // Lógica de autenticação
   // Verifique o username e password e retorne o token de autenticação
@@ -129,6 +150,57 @@ app.post("/auth/jwt/login/", (req, res) => {
     accessToken:
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzSW4iOiIzMGQiLCJpYXQiOjE2OTEwODM5NzExNzEsImlkIjoiODU0NWI3ZGUtMDMwYS00M2JkLTg0ZWEtNWMxMjEzZTU0MDVjIiwiZW1haWwiOiJtb2lzZXMudmFuaWxsYS5qc0BnbWFpbC5jb20iLCJzY29wZSI6IlJPTEVfVVNFUiIsInJkIjoiN2U2YjFkZjVjZmNjNTgzZDdlZDhhZjJiYWJmYzM4MWUifQ.5nJNeI4FAGEeZ11vJZsTEY8sCd--RgjuYT-hWNFJfRU",
   });
+});
+const secretKey = "your-secret-key"; // Substitua isso por uma chave secreta real em produção.
+
+// Simulação de um banco de dados de usuários
+const usersDB = [
+  {
+    id: "8545b7de-030a-43bd-84ea-5c1213e5405c",
+    email: "moises.vanilla.js@gmail.com",
+    password: "12131415",
+    userData: {
+      id: "8545b7de-030a-43bd-84ea-5c1213e5405c",
+      role: "admin",
+      fullName: "Moises Felix",
+      username: "Moises",
+      email: "moises.vanilla.js@gmail.com",
+      lang_key: "pt-br",
+      avatar_uri: "",
+      scope: "",
+      rules: [
+        {
+          action: "read",
+          subject: "",
+        },
+      ],
+    },
+  },
+];
+app.post("/auth/jwt/login", (req, res) => {
+  const { email, password } = req.body;
+
+  // Verifique se o usuário existe na base de dados e a senha está correta
+  const user = usersDB.find(
+    (u) => u.email === email && u.password === password
+  );
+
+  if (!user) {
+    return res.status(401).json({ message: "Credenciais inválidas" });
+  }
+
+  // Crie um token JWT com as informações do usuário
+  const token = jwt.sign(
+    {
+      email: user.email,
+      scope: "ROLE_ADMIN",
+      id: user.id,
+    },
+    secretKey,
+    { expiresIn: "30d" }
+  );
+
+  res.json({ accessToken: token, userData: user.userData });
 });
 
 app.get("/users", (req, res) => {
@@ -345,6 +417,34 @@ app.get("/api/orders", (req, res) => {
   const fakeOrders = generateFakeOrders(); // Chame a função que gera as orders fakes
   res.json(fakeOrders); // Retorna as orders fakes como JSON
 });
+
+app.get("/api/vehicles", async (req, res) => {
+  try {
+    const token =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzSW4iOiIzMGQiLCJpYXQiOjE2OTIzMDUxMDI3MjQsImlkIjoiODU0NWI3ZGUtMDMwYS00M2JkLTg0ZWEtNWMxMjEzZTU0MDVjIiwiZW1haWwiOiJtb2lzZXMudmFuaWxsYS5qc0BnbWFpbC5jb20iLCJzY29wZSI6IkFETUlOIiwicmQiOiI4NGYzYTNjNmQzNDQ5OTIzNmQ2ODIwODFlYjBiYTc0YiIsImFjY291bnRfaWQiOiJmZDliYmMwZi02NzU4LTRmZWYtODEzZS1hNDA4YzNlMDY1ZGEifQ.INMM8NB4XVq1mt2nLccDw10lplmESVMJn3Jzmz8Q8Lc";
+
+    const vehicles = await getVehiclesByToken(token);
+    res.json(vehicles);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+async function getVehiclesByToken(token) {
+  try {
+    const url = `https://api.siglog.com.br/vehicles`;
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log(response);
+    const vehicles = response.data;
+    return vehicles;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 async function getOrdersItemsByOrderId(orderId, token) {
   try {
@@ -3677,7 +3777,7 @@ app.get("/vehicles", (req, res) => {
   });
   //console.log(vehicle)
   if (vehicle) {
-    res.json({ data: vehicle });
+    res.json(vehicle);
   } else {
     res.status(404).send("Pedido não encontrado");
   }

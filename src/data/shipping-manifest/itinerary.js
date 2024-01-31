@@ -65,6 +65,7 @@ function updateItineraryByItineraryIdAndOrderId(itineraryId, taskId, orderId) {
       const order = task.orders.find((order) => order.id === orderId);
       if (order) {
         order.status = "loaded";
+        order.loadedAt = new Date().toISOString();
 
         console.log("Objeto atualizado:", task);
         return true;
